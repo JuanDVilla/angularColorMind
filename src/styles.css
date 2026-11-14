@@ -1,1 +1,79 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primario: #733e8a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* === Menú Superior === */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-primario);
+  padding: 15px 40px;
+}
+
+.nav-left, .nav-right {
+  display: flex;
+  gap: 25px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #000000;
+}
+
+/* === Parte Central === */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* === Barra Inferior === */
+.footer {
+  background-color: var(--color-primario);
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* === Caja exterior (records, login y register) === */
+.records-outer-box {
+  background-color: var(--color-primario); /* Tono naranja/amarillento de fondo de la captura */
+  border: 2px solid #000000; /* Marco exterior azul oscuro */
+  border-radius: 14px;
+  width: 100%;
+  max-width: 900px;
+  min-height: 520px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+}
