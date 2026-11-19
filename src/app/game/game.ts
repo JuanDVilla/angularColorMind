@@ -1,9 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { GameInfo } from '../game-info/game-info';
-import { StartButton } from '../start-button/start-button';
 
 @Component({
-  imports: [GameInfo, StartButton],
+  imports: [GameInfo],
   selector: 'app-game',
   styleUrl: './game.css',
   templateUrl: './game.html',
@@ -11,7 +10,7 @@ import { StartButton } from '../start-button/start-button';
 export class Game {
   started = signal(false);
 
-  onStart() {
+  start() {
     this.started.set(true);
   }
 }

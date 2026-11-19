@@ -1,9 +1,14 @@
 <div class="center-box-game" id="center-box-game">
   <h1 class="game-title">Challenge</h1>
 
+  @if (!started()) {
+    <div class="start-container" id="start-container">
+      <button (click)="start()" class="btn-start" id="btn-start">Start Game</button>
+    </div>
+  }
+
   @if (started()) {
     <app-game-info />
-  } @else {
-    <app-start-button (start)="onStart()" />
   }
+
 </div>

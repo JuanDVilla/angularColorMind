@@ -18,6 +18,9 @@
     <div class="game-column">
       <h2 class="section-title">Colores diponibles</h2>
       <div class="colors-container" id="colors-container">
+        @for (color of COLORS; track color; let i = $index) {
+          <button class="circle" id={{color}} value={{i}} [style.backgroundColor]="color" (click)="selectColor(i, color)"></button>
+        }
       </div>
     </div>
   </div>
