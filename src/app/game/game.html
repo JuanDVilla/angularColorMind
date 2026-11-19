@@ -1,39 +1,7 @@
 <div class="center-box-game" id="center-box-game">
   <h1 class="game-title">Challenge</h1>
 
-  <div class="start-container" id="start-container">
-    <button class="btn-start" id="btn-start">Start Game</button>
-  </div>
+  <app-game-info></app-game-info>
+  <app-start-button></app-start-button>
 
-  <div class="game-container hidden" id="game-container">
-    <div class="game-board">
-      <div class="game-column">
-        <h2 class="section-title">Intento Actual</h2>
-        <div class="slots-container">
-          <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-          <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-          <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-          <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-        </div>
-        <div class="actions-container">
-          <button class="btn-action" id="btn-undo">Atras</button>
-          <button class="btn-action" id="btn-clear">Limpiar</button>
-          <button class="btn-action btn-send" id="btn-send">Enviar</button>
-        </div>
-      </div>
-
-      <div class="game-column">
-        <h2 class="section-title">Colores diponibles</h2>
-        <div class="colors-container" id="colors-container">
-        </div>
-      </div>
-    </div>
-
-    <div class="attempts-section">
-      <h2 class="section-title">Intentos</h2>
-      <div class="attempts-list" id="attempts-list">
-
-      </div>
-    </div>
-  </div>
 </div>
