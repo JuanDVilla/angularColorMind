@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 
 @Component({
   imports: [],
@@ -6,18 +6,68 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './game-info.css',
   templateUrl: './game-info.html',
 })
-export class GameInfo {
-  maxAttends = 10;
-  currentAttends = 0;
-  defaultColor = 'rgb(191, 187, 187)';
+export class GameInfo implements OnInit {
+
+  ngOnInit() {
+    this.generateSecretCode();
+  }
+
+  MAX_ATTEMPS = 10;
+  CURRENT_ATTEMPTS = 0;
+  DEFAULT_COLOR = 'rgb(191, 187, 187)';
   MAX_COLORS = 4;
 
-  SECRET = [];
+  SECRET: number[] = [];
 
   COLORS = ['red', 'green', 'blue', 'yellow', 'white'];
 
-  selectColor(index: number, color: string) {
-    console.log(index, color);
+  slots = signal<(number | null)[]>(Array(this.MAX_COLORS).fill(null));
 
+  selectColor(index: number) {
+    const valueSlots = [...this.slots()];
+    let free = valueSlots.indexOf(null);
+
+    if (free === -1) return;
+
+    valueSlots[free] = index;
+    this.slots.set(valueSlots);
+  }
+
+  undo() {
+    const valueSlots = [...this.slots()];
+    let free = valueSlots.indexOf(null);
+
+    if (free === -1) {
+      valueSlots[valueSlots.length - 1] = null;
+    } else {
+      valueSlots[free - 1] = null;
+    }
+
+    this.slots.set(valueSlots);
+  }
+
+  clear() {
+    this.slots.set(Array(this.MAX_COLORS).fill(null));
+  }
+
+  send() {
+    const valueSlots = [...this.slots()];
+
+    if (this.CURRENT_ATTEMPTS === this.MAX_ATTEMPS) {
+      alert('Llegaste a la cantidad maxima de intentos.');
+      this.clear();
+      return;
+    }
+
+    this.CURRENT_ATTEMPTS++;
+
+    console.log(valueSlots);
+  }
+
+  generateSecretCode() {
+    for (let i = 0; i < this.MAX_COLORS; i++) {
+      const randomColor = Math.floor(Math.random() * this.COLORS.length);
+      this.SECRET.push(randomColor);
+    }
   }
 }

@@ -3,15 +3,14 @@
     <div class="game-column">
       <h2 class="section-title">Intento Actual</h2>
       <div class="slots-container">
-        <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-        <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-        <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
-        <span class="circle slot" name="slot_game" style="background-color:#bfbbbb;"></span>
+        @for (slot of slots(); track $index) {
+          <span class="circle slot" [style.backgroundColor]="slot !== null ? COLORS[slot] : DEFAULT_COLOR"></span>
+        }
       </div>
       <div class="actions-container">
-        <button class="btn-action" id="btn-undo">Atras</button>
-        <button class="btn-action" id="btn-clear">Limpiar</button>
-        <button class="btn-action btn-send" id="btn-send">Enviar</button>
+        <button class="btn-action" id="btn-undo" (click)="undo()">Atras</button>
+        <button class="btn-action" id="btn-clear" (click)="clear()">Limpiar</button>
+        <button class="btn-action btn-send" id="btn-send" (click)="send()">Enviar</button>
       </div>
     </div>
 
@@ -19,7 +18,7 @@
       <h2 class="section-title">Colores diponibles</h2>
       <div class="colors-container" id="colors-container">
         @for (color of COLORS; track color; let i = $index) {
-          <button class="circle" id={{color}} value={{i}} [style.backgroundColor]="color" (click)="selectColor(i, color)"></button>
+          <button class="circle" id={{color}} value={{i}} [style.backgroundColor]="color" (click)="selectColor(i)"></button>
         }
       </div>
     </div>
