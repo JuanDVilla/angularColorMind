@@ -1,5 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
 
+interface Attempt {
+  number: number;
+  colors: number[];
+  blacks: number;
+  whites: number;
+}
+
 @Component({
   imports: [],
   selector: 'app-game-info',
@@ -7,7 +14,6 @@ import { Component, OnInit, signal } from '@angular/core';
   templateUrl: './game-info.html',
 })
 export class GameInfo implements OnInit {
-
   ngOnInit() {
     this.generateSecretCode();
   }
@@ -22,8 +28,13 @@ export class GameInfo implements OnInit {
   COLORS = ['red', 'green', 'blue', 'yellow', 'white'];
 
   slots = signal<(number | null)[]>(Array(this.MAX_COLORS).fill(null));
+  attempts = signal<Attempt[]>([]);
+
+  message = signal('');
+  won = signal(false);
 
   selectColor(index: number) {
+    this.message.set('');
     const valueSlots = [...this.slots()];
     let free = valueSlots.indexOf(null);
 
@@ -51,17 +62,72 @@ export class GameInfo implements OnInit {
   }
 
   send() {
+    if (this.won()) return;
+
     const valueSlots = [...this.slots()];
 
-    if (this.CURRENT_ATTEMPTS === this.MAX_ATTEMPS) {
-      alert('Llegaste a la cantidad maxima de intentos.');
+    if (this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS) {
+      this.message.set('Llegaste a la cantidad máxima de intentos.');
       this.clear();
       return;
     }
 
+    if (valueSlots.includes(null)) {
+      this.message.set('Debes llenar todos los espacios antes de enviar.');
+      return;
+    }
+
+    const colors = valueSlots as number[];
+    const { blacks, whites } = this.evaluate(colors);
+
     this.CURRENT_ATTEMPTS++;
 
-    console.log(valueSlots);
+    this.attempts.update((list) => [
+      { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
+      ...list,
+    ]);
+
+    this.clear();
+
+    if (blacks === this.MAX_COLORS) {
+      this.won.set(true);
+      this.message.set('');
+      return;
+    }
+
+    this.message.set(
+      this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS ? 'Llegaste a la cantidad máxima de intentos.' : '',
+    );
+  }
+
+  evaluate(attempt: number[]) {
+    let blacks = 0;
+    let whites = 0;
+
+    const validated: boolean[] = [];
+
+    for (let i = 0; i < attempt.length; i++) {
+      let currentValueToVerify = attempt[i];
+      if (currentValueToVerify === this.SECRET[i]) {
+        blacks++;
+        validated[i] = true;
+      }
+    }
+
+    for (let i = 0; i < attempt.length; i++) {
+      let currentValueToVerify = attempt[i];
+      if (currentValueToVerify !== this.SECRET[i]) {
+        for (let j = 0; j < this.SECRET.length; j++) {
+          if (currentValueToVerify === this.SECRET[j] && !validated[j]) {
+            whites++;
+            validated[j] = true;
+            break;
+          }
+        }
+      }
+    }
+
+    return { blacks, whites };
   }
 
   generateSecretCode() {

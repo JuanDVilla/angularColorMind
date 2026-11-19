@@ -1,4 +1,9 @@
 <div class="game-container" id="game-container">
+  @if (won()) {
+    <div class="success-message" role="status">
+      ¡Felicidades! Descubriste el código secreto en {{ CURRENT_ATTEMPTS }} {{ CURRENT_ATTEMPTS === 1 ? 'intento' : 'intentos' }}.
+    </div>
+  }
   <div class="game-board">
     <div class="game-column">
       <h2 class="section-title">Intento Actual</h2>
@@ -12,6 +17,9 @@
         <button class="btn-action" id="btn-clear" (click)="clear()">Limpiar</button>
         <button class="btn-action btn-send" id="btn-send" (click)="send()">Enviar</button>
       </div>
+      @if (message()) {
+        <div class="alert-message" role="alert">{{ message() }}</div>
+      }
     </div>
 
     <div class="game-column">
@@ -27,7 +35,25 @@
   <div class="attempts-section">
     <h2 class="section-title">Intentos</h2>
     <div class="attempts-list" id="attempts-list">
-
+      @for (attempt of attempts(); track attempt.number) {
+        <div class="attempt-row">
+          <span class="attempt-number">#{{ attempt.number }}</span>
+          <div class="attempt-colors">
+            @for (c of attempt.colors; track $index) {
+              <span class="circle slot" [style.backgroundColor]="COLORS[c]"></span>
+            }
+          </div>
+          <span class="arrow">&rarr;</span>
+          <div class="attempt-feedback">
+            @for (b of [].constructor(attempt.blacks); track $index) {
+              <span class="circle-feedback" style="background-color: black"></span>
+            }
+            @for (w of [].constructor(attempt.whites); track $index) {
+              <span class="circle-feedback" style="background-color: white"></span>
+            }
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>
