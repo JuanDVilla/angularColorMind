@@ -1,0 +1,23 @@
+.center-box {
+  background-color: var(--color-primario);
+  width: 100%;
+  max-width: 1000px;
+  min-height: 500px;
+  padding: 150px 40px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.center-box h1 {
+  color: #ffffff;
+  font-size: 4rem;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.center-box h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 10px;
+}
