@@ -52,13 +52,6 @@ body {
 }
 
 /* === Barra Inferior === */
-.footer {
-  background-color: var(--color-primario);
-  text-align: center;
-  padding: 15px;
-  font-size: 14px;
-  color: #ffffff;
-}
 
 .hidden {
   display: none !important;
