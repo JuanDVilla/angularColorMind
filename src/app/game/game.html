@@ -1,7 +1,9 @@
 <div class="center-box-game" id="center-box-game">
   <h1 class="game-title">Challenge</h1>
 
-  <app-game-info></app-game-info>
-  <app-start-button></app-start-button>
-
+  @if (started()) {
+    <app-game-info />
+  } @else {
+    <app-start-button (start)="onStart()" />
+  }
 </div>

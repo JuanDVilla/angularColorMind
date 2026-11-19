@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 
 @Component({
   imports: [],
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   styleUrl: './start-button.css',
   templateUrl: './start-button.html',
 })
-export class StartButton {}
+export class StartButton {
+  start = output<void>();
+}

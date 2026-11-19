@@ -7,3 +7,26 @@
   font-size: 16px;
   cursor: pointer;
 }
+
+.start-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+}
+
+.btn-start {
+  background-color: #3182ce;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-start:hover {
+  background-color: #2b6cb0;
+}
