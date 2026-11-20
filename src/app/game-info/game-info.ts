@@ -39,6 +39,7 @@ export class GameInfo implements OnInit {
   attempts = signal<Attempt[]>([]);
 
   message = signal('');
+  localNotice = signal('');
   won = signal(false);
 
   selectColor(index: number) {
@@ -190,7 +191,15 @@ export class GameInfo implements OnInit {
       this.api.game().subscribe({
         next: (response) => {
           console.log(response.body);
-        }
+        },
+        error: (error) => {
+          if (error.status === 409) {
+            this.ONLINE_GAME = false;
+            this.localNotice.set(
+              'Ya jugaste el desafío actual. Estás jugando de forma local y no se sumarán puntos.',
+            );
+          }
+        },
       });
     }
   }

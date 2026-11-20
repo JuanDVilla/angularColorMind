@@ -4,6 +4,9 @@
       ¡Felicidades! Descubriste el código secreto en {{ CURRENT_ATTEMPTS }} {{ CURRENT_ATTEMPTS === 1 ? 'intento' : 'intentos' }}.
     </div>
   }
+  @if (localNotice()) {
+    <div class="alert-message" role="status">{{ localNotice() }}</div>
+  }
   <div class="game-board">
     <div class="game-column">
       <h2 class="section-title">Intento Actual</h2>
