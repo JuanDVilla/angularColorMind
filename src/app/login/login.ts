@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { User } from '../shared/services/user';
+import { Api } from '../shared/services/api';
 import { Tokenmgr } from '../shared/services/tokenmgr';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [FormsModule],
@@ -14,18 +15,20 @@ export class Login {
   password: string = '';
   errorMessage = signal<string | null>(null)
 
-  private usrMgr = inject(User);
+  private api = inject(Api);
   private tokenMgr = inject(Tokenmgr);
+  private router = inject(Router);
 
   login(): void {
-    this.usrMgr.userLogin(this.username, this.password).subscribe({
+    this.api.login(this.username, this.password).subscribe({
       next: (response) => {
         let myToken = response.headers.get('Authorization');
         this.tokenMgr.setToken(myToken);
+        this.router.navigate(['/game']);
       },
       error: (error) => {
         this.errorMessage.set(error.error);
-      }
+      },
     });
   }
 }

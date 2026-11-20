@@ -15,7 +15,7 @@
       <div class="actions-container">
         <button class="btn-action" id="btn-undo" (click)="undo()">Atras</button>
         <button class="btn-action" id="btn-clear" (click)="clear()">Limpiar</button>
-        <button class="btn-action btn-send" id="btn-send" (click)="send()">Enviar</button>
+        <button class="btn-action btn-send" id="btn-send" (click)="ONLINE_GAME ? sendOnline() : send()">Enviar</button>
       </div>
       @if (message()) {
         <div class="alert-message" role="alert">{{ message() }}</div>

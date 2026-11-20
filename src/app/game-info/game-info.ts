@@ -1,4 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Tokenmgr } from '../shared/services/tokenmgr';
+import { Api } from '../shared/services/api';
 
 interface Attempt {
   number: number;
@@ -16,7 +18,11 @@ interface Attempt {
 export class GameInfo implements OnInit {
   ngOnInit() {
     this.generateSecretCode();
+    this.validateGameOline();
   }
+
+  private tokenManager = inject(Tokenmgr);
+  private api = inject(Api);
 
   MAX_ATTEMPS = 10;
   CURRENT_ATTEMPTS = 0;
@@ -26,6 +32,8 @@ export class GameInfo implements OnInit {
   SECRET: number[] = [];
 
   COLORS = ['red', 'green', 'blue', 'yellow', 'white'];
+
+  ONLINE_GAME = false;
 
   slots = signal<(number | null)[]>(Array(this.MAX_COLORS).fill(null));
   attempts = signal<Attempt[]>([]);
@@ -65,29 +73,23 @@ export class GameInfo implements OnInit {
     if (this.won()) return;
 
     const valueSlots = [...this.slots()];
-
-    if (this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS) {
-      this.message.set('Llegaste a la cantidad máxima de intentos.');
-      this.clear();
-      return;
-    }
+    const colors = valueSlots as number[];
 
     if (valueSlots.includes(null)) {
       this.message.set('Debes llenar todos los espacios antes de enviar.');
       return;
     }
 
-    const colors = valueSlots as number[];
-    const { blacks, whites } = this.evaluate(colors);
+    if (this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS) {
+      this.message.set('Llegaste a la cantidad máxima de intentos.');
+      this.clear();
+      this.slots.set(this.SECRET);
+      return;
+    }
+
+    const [blacks, whites] = this.evaluate(colors);
 
     this.CURRENT_ATTEMPTS++;
-
-    this.attempts.update((list) => [
-      { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
-      ...list,
-    ]);
-
-    this.clear();
 
     if (blacks === this.MAX_COLORS) {
       this.won.set(true);
@@ -95,9 +97,53 @@ export class GameInfo implements OnInit {
       return;
     }
 
-    this.message.set(
-      this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS ? 'Llegaste a la cantidad máxima de intentos.' : '',
-    );
+    this.attempts.update((list) => [
+      { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
+      ...list,
+    ]);
+
+    this.clear();
+  }
+
+  sendOnline() {
+    const valueSlots = [...this.slots()];
+    const colors = valueSlots as number[];
+
+    if (valueSlots.includes(null)) {
+      this.message.set('Debes llenar todos los espacios antes de enviar.');
+      return;
+    }
+
+    this.api.validateAttempt(colors).subscribe({
+      next: (response) => {
+
+        const body = response.body;
+
+        const blacks = body?.black_pegs ?? 0;
+        const whites = body?.white_pegs ?? 0;
+        this.CURRENT_ATTEMPTS = body?. attempt_number ?? this.CURRENT_ATTEMPTS;
+
+        this.attempts.update((list) => [
+          { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
+          ...list,
+        ]);
+
+        if (body?.solved) {
+          this.won.set(true);
+          this.message.set('');
+          this.CURRENT_ATTEMPTS = body?.attempts_used ?? this.CURRENT_ATTEMPTS;
+          return;
+        }
+
+        if(body?.finished) {
+          this.won.set(false);
+          this.message.set(body?.message ?? 'No ');
+          return;
+        }
+
+        this.clear();
+      },
+    });
   }
 
   evaluate(attempt: number[]) {
@@ -127,7 +173,7 @@ export class GameInfo implements OnInit {
       }
     }
 
-    return { blacks, whites };
+    return [blacks, whites];
   }
 
   generateSecretCode() {
@@ -136,4 +182,17 @@ export class GameInfo implements OnInit {
       this.SECRET.push(randomColor);
     }
   }
+
+  validateGameOline() {
+    if(this.tokenManager.getToken()) {
+      this.ONLINE_GAME = true;
+
+      this.api.game().subscribe({
+        next: (response) => {
+          console.log(response.body);
+        }
+      });
+    }
+  }
+
 }
