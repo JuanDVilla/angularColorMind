@@ -33,6 +33,17 @@ export class Api {
     return this.http.get<any>(url, { observe: 'response' });
   }
 
+  register(username: string, email: string, password: string): Observable<any> {
+    const url = `${BASE_URL}/users`;
+
+    const body = {
+      username: username,
+      password: password,
+      email: email,
+    }
+    return this.http.post(url, body, { observe: 'response' });
+  }
+
 
 
 }
