@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { UserManager } from '../shared/services/userManager';
 
 @Component({
   imports: [RouterLink, RouterLinkActive],
@@ -7,4 +8,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './menu.css',
   templateUrl: './menu.html',
 })
-export class Menu {}
+export class Menu {
+  private userManager = inject(UserManager);
+  private router = inject(Router);
+
+  logged = this.userManager.logged;
+  username = this.userManager.username;
+
+  logout() {
+    this.userManager.removeToken();
+    this.router.navigate(['login']);
+  }
+}

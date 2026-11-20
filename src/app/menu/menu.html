@@ -5,7 +5,12 @@
     <a routerLink="records" routerLinkActive="active">Records</a>
   </nav>
   <nav class="nav-right">
-    <a routerLink="register" routerLinkActive="active">Register</a>
-    <a routerLink="login" routerLinkActive="active">Login</a>
+    @if (logged()) {
+      <span class="username">Bienvenido: {{ username() }}</span>
+      <a href="#" (click)="$event.preventDefault(); logout()">Logout</a>
+    } @else {
+      <a routerLink="register" routerLinkActive="active">Register</a>
+      <a routerLink="login" routerLinkActive="active">Login</a>
+    }
   </nav>
 </header>
