@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Tokenmgr } from '../shared/services/tokenmgr';
+import { UserManager } from '../shared/services/userManager';
 import { Api } from '../shared/services/api';
 
 interface Attempt {
@@ -21,7 +21,7 @@ export class GameInfo implements OnInit {
     this.validateGameOline();
   }
 
-  private tokenManager = inject(Tokenmgr);
+  private tokenManager = inject(UserManager);
   private api = inject(Api);
 
   MAX_ATTEMPS = 10;

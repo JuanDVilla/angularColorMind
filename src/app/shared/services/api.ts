@@ -23,4 +23,16 @@ export class Api {
     return this.http.post<AttemptResponse>(url, { guess: attempt }, { observe: 'response' });
   }
 
+  records(): Observable<any> {
+    const url = `${BASE_URL}/scores`;
+    return this.http.get<any>(url, { observe: 'response' });
+  }
+
+  recordsByUser(username: string): Observable<any> {
+    const url = `${BASE_URL}/scores/${username}`;
+    return this.http.get<any>(url, { observe: 'response' });
+  }
+
+
+
 }

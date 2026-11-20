@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Api } from '../shared/services/api';
-import { Tokenmgr } from '../shared/services/tokenmgr';
+import { UserManager } from '../shared/services/userManager';
 import { FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -16,14 +16,15 @@ export class Login {
   errorMessage = signal<string | null>(null)
 
   private api = inject(Api);
-  private tokenMgr = inject(Tokenmgr);
+  private userManager = inject(UserManager);
   private router = inject(Router);
 
   login(): void {
     this.api.login(this.username, this.password).subscribe({
       next: (response) => {
         let myToken = response.headers.get('Authorization');
-        this.tokenMgr.setToken(myToken);
+        this.userManager.setToken(myToken);
+        this.userManager.setUser(this.username);
         this.router.navigate(['/game']);
       },
       error: (error) => {

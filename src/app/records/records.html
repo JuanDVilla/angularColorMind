@@ -1,20 +1,36 @@
-<div class="records-outer-box">
+<ng-template #scoresTable let-title="title" let-rows="rows">
   <fieldset class="scores-container">
-    <legend class="scores-legend">Scores</legend>
-    <table class="scores-table" id="table-records">
+    <legend class="scores-legend">{{ title }}</legend>
+    <table class="scores-table">
       <thead>
       <tr>
         <th></th>
-        <th>Api</th>
+        <th>User</th>
         <th>Points</th>
         <th>Attempts</th>
         <th>Secs.</th>
         <th>Date</th>
       </tr>
       </thead>
-      <tbody id="scores-tbody">
-
+      <tbody>
+        @for (record of rows; track $index) {
+          <tr>
+            <td class="col-num">{{ $index + 1 }}.</td>
+            <td class="col-user">{{ record.username }}</td>
+            <td>{{ record.score }}</td>
+            <td>{{ record.attempts }}</td>
+            <td>{{ record.disposedTime }}</td>
+            <td>{{ record.recordDate | date: 'd/M/yyyy' }}</td>
+          </tr>
+        }
       </tbody>
     </table>
   </fieldset>
+</ng-template>
+
+<div class="records-outer-box">
+  <ng-container *ngTemplateOutlet="scoresTable; context: { title: 'Puntajes Gobales', rows: records() }" />
+  @if(USER_EXISTS) {
+    <ng-container *ngTemplateOutlet="scoresTable; context: { title: 'Puntajes del Usuario', rows: recordsUser() }" />
+  }
 </div>

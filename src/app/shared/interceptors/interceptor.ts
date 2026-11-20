@@ -1,9 +1,9 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Tokenmgr } from '../services/tokenmgr';
+import { UserManager } from '../services/userManager';
 
 export const interceptor: HttpInterceptorFn = (req, next) => {
-  const tokenMgr = inject(Tokenmgr);
+  const tokenMgr = inject(UserManager);
   const token = tokenMgr.getToken();
 
   if (!token) {
