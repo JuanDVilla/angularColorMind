@@ -30,7 +30,7 @@ export class GameInfo implements OnInit {
   private tokenManager = inject(UserManager);
   private api = inject(Api);
 
-  MAX_ATTEMPS = 10;
+  MAX_ATTEMPS = 12;
   CURRENT_ATTEMPTS = 0;
   MAX_COLORS = 4;
 
