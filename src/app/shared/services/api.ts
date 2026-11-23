@@ -25,12 +25,12 @@ export class Api {
 
   records(): Observable<any> {
     const url = `${BASE_URL}/scores`;
-    return this.http.get<any>(url, { observe: 'response' });
+    return this.http.get(url, { observe: 'response' });
   }
 
   recordsByUser(username: string): Observable<any> {
     const url = `${BASE_URL}/scores/${username}`;
-    return this.http.get<any>(url, { observe: 'response' });
+    return this.http.get(url, { observe: 'response' });
   }
 
   register(username: string, email: string, password: string): Observable<any> {
@@ -42,6 +42,11 @@ export class Api {
       email: email,
     }
     return this.http.post(url, body, { observe: 'response' });
+  }
+
+  validateUser(username:string): Observable<any> {
+    const url = `${BASE_URL}/users/${username}`;
+    return this.http.get(url, { observe: 'response' });
   }
 
 

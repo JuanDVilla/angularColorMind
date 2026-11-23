@@ -10,7 +10,7 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './register.html',
 })
 export class Register {
-  userName: string = '';
+  username: string = '';
   password: string = '';
   email: string = '';
   repeatPassword: string = '';
@@ -32,10 +32,9 @@ export class Register {
     }
     this.errorMessage.set('');
 
-    this.api.register(this.userName, this.email, this.password).subscribe({
+    this.api.register(this.username, this.email, this.password).subscribe({
       next: (response) => {
-        console.log(response);
-        this.userName = '';
+        this.username = '';
         this.password = '';
         this.email = '';
         this.repeatPassword = '';
@@ -43,6 +42,15 @@ export class Register {
       },
       error: (error) => {
         this.errorMessage.set(error.error);
+      },
+    });
+  }
+
+  validateUser(): void {
+    console.log('llamado');
+    this.api.validateUser(this.username).subscribe({
+      next: (response) => {
+        this.errorMessage.set('El usuario ya existe.');
       },
     });
   }

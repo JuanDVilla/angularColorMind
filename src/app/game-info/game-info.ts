@@ -201,6 +201,10 @@ export class GameInfo implements OnInit {
           }
         },
       });
+    } else {
+      this.localNotice.set(
+        'Estás jugando de forma local y no se sumarán puntos.',
+      );
     }
   }
 

@@ -5,7 +5,7 @@
     <form id="form-register" class="auth-form" (ngSubmit)="register()">
       <div class="form-group">
         <label for="reg-user">User:</label>
-        <input type="text" id="reg-user" [(ngModel)]="userName" name="user" placeholder="Nombre Usuario" required>
+        <input type="text" id="reg-user" [(ngModel)]="username" name="user" placeholder="Nombre Usuario" required (blur)="validateUser()">
       </div>
 
       <div class="form-group">
