@@ -41,13 +41,14 @@ export class Register {
         this.successMessage.set('Registro exitoso. Dirígete al login para poder jugar.');
       },
       error: (error) => {
-        this.errorMessage.set(error.error);
+        this.errorMessage.set(
+          typeof error.error === 'string' && error.error ? error.error : 'No se pudo completar el registro.',
+        );
       },
     });
   }
 
   validateUser(): void {
-    console.log('llamado');
     this.api.validateUser(this.username).subscribe({
       next: (response) => {
         this.errorMessage.set('El usuario ya existe.');

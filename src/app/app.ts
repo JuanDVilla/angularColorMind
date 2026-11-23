@@ -10,5 +10,5 @@ import { Footer } from './footer/footer';
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('Juego Colores - Juan Diego Villa Montoya');
+  protected readonly title = signal('F1 Pole Position Mind');
 }

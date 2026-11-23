@@ -1,14 +1,20 @@
-<div class="center-box-game" id="center-box-game">
-  <h1 class="game-title">Challenge</h1>
+<section class="game-page">
+  <header class="game-header">
+    <p class="eyebrow display">Gran Premio</p>
+    <h1 class="display">Pole Position Mind</h1>
+  </header>
 
   @if (!started()) {
-    <div class="start-container" id="start-container">
-      <button (click)="start()" class="btn-start" id="btn-start">Start Game</button>
+    <div class="panel start-panel">
+      <div class="lights" aria-hidden="true">
+        @for (l of [1, 2, 3, 4, 5]; track l) {
+          <span></span>
+        }
+      </div>
+      <p>Adivina el orden en que los carros arrancan en la parrilla.</p>
+      <button (click)="start()" class="btn btn-primary" id="btn-start">Encender motores</button>
     </div>
-  }
-
-  @if (started()) {
+  } @else {
     <app-game-info />
   }
-
-</div>
+</section>

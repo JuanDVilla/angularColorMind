@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { Api } from '../shared/services/api';
 import { UserManager } from '../shared/services/userManager';
-import { FormGroup, FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   selector: 'app-login',
   styleUrl: './login.css',
   templateUrl: './login.html',
@@ -28,7 +28,9 @@ export class Login {
         this.router.navigate(['/game']);
       },
       error: (error) => {
-        this.errorMessage.set(error.error);
+        this.errorMessage.set(
+          typeof error.error === 'string' && error.error ? error.error : 'No se pudo iniciar sesión.',
+        );
       },
     });
   }

@@ -9,7 +9,7 @@ export class Api {
   private http = inject(HttpClient);
 
   login(user: string, password: string): Observable<any> {
-    const url = `${BASE_URL}/users/login?username=${user}&password=${password}`;
+    const url = `${BASE_URL}/users/login?username=${encodeURIComponent(user)}&password=${encodeURIComponent(password)}`;
     return this.http.get(url, { observe: 'response' });
   }
 

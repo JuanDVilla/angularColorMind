@@ -1,61 +1,117 @@
-<div class="game-container" id="game-container">
+<div class="game">
   @if (won()) {
-    <div class="success-message" role="status">
-      ¡Felicidades! Descubriste el código secreto en {{ CURRENT_ATTEMPTS }} {{ CURRENT_ATTEMPTS === 1 ? 'intento' : 'intentos' }}.
+    <div class="success-message banner" role="status">
+      🏁 ¡Pole position! Descubriste la parrilla en {{ CURRENT_ATTEMPTS }}
+      {{ CURRENT_ATTEMPTS === 1 ? 'intento' : 'intentos' }}.
+    </div>
+  }
+  @if (lost()) {
+    <div class="error-message banner" role="alert">
+      Fin de la carrera. {{ message() || 'Se acabaron los intentos.' }}
+      @if (revealed().length) {
+        <div class="reveal">
+          <span>La parrilla era:</span>
+          @for (c of revealed(); track $index) {
+            <app-car class="mini" [color]="CARS[c].color" />
+          }
+        </div>
+      }
     </div>
   }
   @if (localNotice()) {
-    <div class="alert-message" role="status">{{ localNotice() }}</div>
+    <div class="info-message banner" role="status">{{ localNotice() }}</div>
   }
-  <div class="game-board">
-    <div class="game-column">
-      <h2 class="section-title">Intento Actual</h2>
-      <div class="slots-container">
-        @for (slot of slots(); track $index) {
-          <span class="circle slot" [style.backgroundColor]="slot !== null ? COLORS[slot] : DEFAULT_COLOR"></span>
-        }
-      </div>
-      <div class="actions-container">
-        <button class="btn-action" id="btn-undo" (click)="undo()">Atras</button>
-        <button class="btn-action" id="btn-clear" (click)="clear()">Limpiar</button>
-        <button class="btn-action btn-send" id="btn-send" (click)="ONLINE_GAME ? sendOnline() : send()">Enviar</button>
-      </div>
-      @if (message()) {
-        <div class="alert-message" role="alert">{{ message() }}</div>
+
+  <div class="board">
+  <div class="panel track">
+    <h2 class="panel-title">Tu parrilla de salida</h2>
+
+    <div class="grid-slots">
+      @for (slot of slots(); track $index; let i = $index) {
+        <div class="slot" [class.filled]="slot !== null" [style.--i]="i">
+          <div class="slot-car">
+            @if (slot !== null) {
+              <app-car [color]="CARS[slot].color" />
+            }
+          </div>
+          <span class="slot-label display">P{{ i + 1 }}</span>
+        </div>
       }
     </div>
 
-    <div class="game-column">
-      <h2 class="section-title">Colores diponibles</h2>
-      <div class="colors-container" id="colors-container">
-        @for (color of COLORS; track color; let i = $index) {
-          <button class="circle" id={{color}} value={{i}} [style.backgroundColor]="color" (click)="selectColor(i)"></button>
-        }
-      </div>
+    <div class="actions">
+      <button class="btn" id="btn-undo" (click)="undo()" [disabled]="finished">Atrás</button>
+      <button class="btn" id="btn-clear" (click)="clear()" [disabled]="finished">Limpiar</button>
+      <button
+        class="btn btn-primary"
+        id="btn-send"
+        (click)="ONLINE_GAME ? sendOnline() : send()"
+        [disabled]="finished"
+      >
+        Enviar
+      </button>
+      @if (finished) {
+        <button class="btn btn-primary" id="btn-restart" (click)="restart()">Jugar de nuevo</button>
+      }
+    </div>
+
+    @if (message() && !lost()) {
+      <div class="error-message" role="alert">{{ message() }}</div>
+    }
+  </div>
+
+  <div class="panel garage">
+    <h2 class="panel-title">Garaje</h2>
+    <div class="cars-container" id="colors-container">
+      @for (car of CARS; track car.name; let i = $index) {
+        <button
+          class="garage-car"
+          [id]="car.name.toLowerCase()"
+          [value]="i"
+          [disabled]="finished"
+          [attr.aria-label]="'Carro ' + car.name"
+          (click)="selectColor(i)"
+        >
+          <app-car [color]="car.color" />
+          <span>{{ car.name }}</span>
+        </button>
+      }
     </div>
   </div>
 
-  <div class="attempts-section">
-    <h2 class="section-title">Intentos</h2>
+  </div>
+
+  <div class="panel history">
+    <h2 class="panel-title">
+      Vueltas
+      <span class="counter">{{ CURRENT_ATTEMPTS }} / {{ MAX_ATTEMPS }}</span>
+    </h2>
+
+    <p class="legend">
+      <span><i class="peg peg-green"></i>Carro correcto en su posición</span>
+      <span><i class="peg peg-amber"></i>Carro correcto, posición equivocada</span>
+    </p>
+
     <div class="attempts-list" id="attempts-list">
       @for (attempt of attempts(); track attempt.number) {
         <div class="attempt-row">
-          <span class="attempt-number">#{{ attempt.number }}</span>
-          <div class="attempt-colors">
+          <span class="attempt-number display">#{{ attempt.number }}</span>
+          <div class="attempt-cars">
             @for (c of attempt.colors; track $index) {
-              <span class="circle slot" [style.backgroundColor]="COLORS[c]"></span>
+              <app-car class="mini" [color]="CARS[c].color" />
             }
           </div>
-          <span class="arrow">&rarr;</span>
           <div class="attempt-feedback">
-            @for (b of [].constructor(attempt.blacks); track $index) {
-              <span class="circle-feedback" style="background-color: black"></span>
+            @for (b of range(attempt.blacks); track $index) {
+              <i class="peg peg-green"></i>
             }
-            @for (w of [].constructor(attempt.whites); track $index) {
-              <span class="circle-feedback" style="background-color: white"></span>
+            @for (w of range(attempt.whites); track $index) {
+              <i class="peg peg-amber"></i>
             }
           </div>
         </div>
+      } @empty {
+        <p class="empty">Aún no has dado ninguna vuelta.</p>
       }
     </div>
   </div>

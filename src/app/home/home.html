@@ -1,4 +1,40 @@
-<div class="center-box">
-  <h1>ColorMind</h1>
-  <h2>Juan Diego Villa Montoya</h2>
-</div>
+<section class="hero">
+  <div class="hero-grid">
+    @for (c of cars; track c; let i = $index) {
+      <div class="hero-car" [style.--i]="i"><app-car [color]="c" /></div>
+    }
+  </div>
+
+  <p class="eyebrow display">Parrilla de salida</p>
+  <h1 class="display">F1 <span>Pole Position</span> Mind</h1>
+  <p class="lead">
+    Los carros ya están en pista, pero nadie sabe en qué orden saldrán. Descubre la parrilla
+    secreta antes de que se apaguen los semáforos.
+  </p>
+
+  <div class="cta">
+    <a routerLink="/game" class="btn btn-primary">Ir a la parrilla</a>
+    <a routerLink="/records" class="btn">Ver récords</a>
+  </div>
+
+  <div class="rules">
+    <article>
+      <span class="step display">1</span>
+      <h3>Ordena la parrilla</h3>
+      <p>Elige 4 carros del garaje y colócalos en las posiciones P1 a P4. Puedes repetir carro.</p>
+    </article>
+    <article>
+      <span class="step display">2</span>
+      <h3>Lee las señales</h3>
+      <p>
+        <i class="peg peg-green"></i> carro correcto en su posición.<br />
+        <i class="peg peg-amber"></i> carro correcto, posición equivocada.
+      </p>
+    </article>
+    <article>
+      <span class="step display">3</span>
+      <h3>Consigue la pole</h3>
+      <p>Tienes 10 intentos. Menos intentos y menos tiempo suman más puntos.</p>
+    </article>
+  </div>
+</section>

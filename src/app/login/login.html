@@ -1,25 +1,26 @@
-<div class="records-outer-box">
-  <fieldset class="form-container">
-    <legend class="scores-legend">Login</legend>
+<div class="panel auth-card">
+  <h1>Entrar a boxes</h1>
+  <p class="subtitle">Inicia sesión para sumar puntos al ranking.</p>
 
-    <form id="form-login" class="auth-form">
-      @if(errorMessage()) {
-        <p class="error-message" id="login-error" role="alert">{{errorMessage()}}</p>
-      }
+  <form id="form-login" class="auth-form" (ngSubmit)="login()">
+    @if (errorMessage()) {
+      <p class="error-message" id="login-error" role="alert">{{ errorMessage() }}</p>
+    }
 
-      <div class="form-group">
-        <label for="login-user">Usuario:</label>
-        <input [(ngModel)]="username" type="text" id="login-user" name="user" placeholder="Usuario" required>
-      </div>
+    <div class="form-group">
+      <label for="login-user">Usuario</label>
+      <input [(ngModel)]="username" type="text" id="login-user" name="user" placeholder="Tu piloto" autocomplete="username" required />
+    </div>
 
-      <div class="form-group">
-        <label for="login-pass">Contraseña:</label>
-        <input [(ngModel)]="password" type="password" id="login-pass" name="password" placeholder="Contraseña" required>
-      </div>
+    <div class="form-group">
+      <label for="login-pass">Contraseña</label>
+      <input [(ngModel)]="password" type="password" id="login-pass" name="password" placeholder="••••••••" autocomplete="current-password" required />
+    </div>
 
-      <div class="form-actions">
-        <button (click) = login() id="submit-login" class="btn-send-auth">Send</button>
-      </div>
-    </form>
-  </fieldset>
+    <div class="form-actions">
+      <button type="submit" id="submit-login" class="btn btn-primary">Entrar</button>
+    </div>
+  </form>
+
+  <p class="auth-alt">¿Sin cuenta? <a routerLink="/register">Regístrate</a></p>
 </div>

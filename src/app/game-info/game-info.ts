@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { UserManager } from '../shared/services/userManager';
 import { Api } from '../shared/services/api';
+import { Car } from '../car/car';
 
 interface Attempt {
   number: number;
@@ -9,8 +10,13 @@ interface Attempt {
   whites: number;
 }
 
+interface CarInfo {
+  name: string;
+  color: string;
+}
+
 @Component({
-  imports: [],
+  imports: [Car],
   selector: 'app-game-info',
   styleUrl: './game-info.css',
   templateUrl: './game-info.html',
@@ -26,12 +32,20 @@ export class GameInfo implements OnInit {
 
   MAX_ATTEMPS = 10;
   CURRENT_ATTEMPTS = 0;
-  DEFAULT_COLOR = 'rgb(191, 187, 187)';
   MAX_COLORS = 4;
 
   SECRET: number[] = [];
 
-  COLORS = ['red', 'green', 'blue', 'yellow', 'white'];
+  // El orden debe mantenerse: la API identifica cada carro por su índice.
+  CARS: CarInfo[] = [
+    { name: 'Rojo', color: '#e10600' },
+    { name: 'Verde', color: '#22c55e' },
+    { name: 'Azul', color: '#2563eb' },
+    { name: 'Amarillo', color: '#facc15' },
+    { name: 'Blanco', color: '#f5f5f5' },
+  ];
+
+  POSITIONS = Array.from({ length: this.MAX_COLORS }, (_, i) => i + 1);
 
   ONLINE_GAME = false;
 
@@ -41,11 +55,38 @@ export class GameInfo implements OnInit {
   message = signal('');
   localNotice = signal('');
   won = signal(false);
+  lost = signal(false);
+  revealed = signal<number[]>([]);
+
+  get finished() {
+    return this.won() || this.lost();
+  }
+
+  range(n: number) {
+    return Array.from({ length: n }, (_, i) => i);
+  }
+
+  restart() {
+    this.SECRET = [];
+    this.generateSecretCode();
+    this.CURRENT_ATTEMPTS = 0;
+    this.attempts.set([]);
+    this.won.set(false);
+    this.lost.set(false);
+    this.revealed.set([]);
+    this.message.set('');
+    this.localNotice.set('');
+    this.clear();
+    // Si hay sesión, el backend decide: 409 => ya jugó hoy => práctica local.
+    this.ONLINE_GAME = false;
+    this.validateGameOline();
+  }
 
   selectColor(index: number) {
+    if (this.finished) return;
     this.message.set('');
     const valueSlots = [...this.slots()];
-    let free = valueSlots.indexOf(null);
+    const free = valueSlots.indexOf(null);
 
     if (free === -1) return;
 
@@ -54,15 +95,14 @@ export class GameInfo implements OnInit {
   }
 
   undo() {
+    if (this.finished) return;
     const valueSlots = [...this.slots()];
-    let free = valueSlots.indexOf(null);
+    const free = valueSlots.indexOf(null);
+    const last = free === -1 ? valueSlots.length - 1 : free - 1;
 
-    if (free === -1) {
-      valueSlots[valueSlots.length - 1] = null;
-    } else {
-      valueSlots[free - 1] = null;
-    }
+    if (last < 0) return;
 
+    valueSlots[last] = null;
     this.slots.set(valueSlots);
   }
 
@@ -71,26 +111,23 @@ export class GameInfo implements OnInit {
   }
 
   send() {
-    if (this.won()) return;
+    if (this.finished) return;
 
     const valueSlots = [...this.slots()];
     const colors = valueSlots as number[];
 
     if (valueSlots.includes(null)) {
-      this.message.set('Debes llenar todos los espacios antes de enviar.');
-      return;
-    }
-
-    if (this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS) {
-      this.message.set('Llegaste a la cantidad máxima de intentos.');
-      this.clear();
-      this.slots.set(this.SECRET);
+      this.message.set('Debes llenar todas las posiciones de la parrilla antes de enviar.');
       return;
     }
 
     const [blacks, whites] = this.evaluate(colors);
 
     this.CURRENT_ATTEMPTS++;
+    this.attempts.update((list) => [
+      { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
+      ...list,
+    ]);
 
     if (blacks === this.MAX_COLORS) {
       this.won.set(true);
@@ -98,31 +135,34 @@ export class GameInfo implements OnInit {
       return;
     }
 
-    this.attempts.update((list) => [
-      { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
-      ...list,
-    ]);
+    if (this.CURRENT_ATTEMPTS >= this.MAX_ATTEMPS) {
+      this.lost.set(true);
+      this.revealed.set(this.SECRET);
+      this.message.set('');
+      return;
+    }
 
     this.clear();
   }
 
   sendOnline() {
+    if (this.finished) return;
+
     const valueSlots = [...this.slots()];
     const colors = valueSlots as number[];
 
     if (valueSlots.includes(null)) {
-      this.message.set('Debes llenar todos los espacios antes de enviar.');
+      this.message.set('Debes llenar todas las posiciones de la parrilla antes de enviar.');
       return;
     }
 
     this.api.validateAttempt(colors).subscribe({
       next: (response) => {
-
         const body = response.body;
 
         const blacks = body?.black_pegs ?? 0;
         const whites = body?.white_pegs ?? 0;
-        this.CURRENT_ATTEMPTS = body?. attempt_number ?? this.CURRENT_ATTEMPTS;
+        this.CURRENT_ATTEMPTS = body?.attempt_number ?? this.CURRENT_ATTEMPTS;
 
         this.attempts.update((list) => [
           { number: this.CURRENT_ATTEMPTS, colors, blacks, whites },
@@ -136,13 +176,20 @@ export class GameInfo implements OnInit {
           return;
         }
 
-        if(body?.finished) {
-          this.won.set(false);
-          this.message.set(body?.message ?? 'No ');
+        if (body?.finished) {
+          this.lost.set(true);
+          this.message.set(body?.message ?? '');
           return;
         }
 
         this.clear();
+      },
+      error: (error) => {
+        this.message.set(
+          typeof error.error === 'string' && error.error
+            ? error.error
+            : 'No se pudo enviar el intento. Inténtalo de nuevo.',
+        );
       },
     });
   }
@@ -154,18 +201,16 @@ export class GameInfo implements OnInit {
     const validated: boolean[] = [];
 
     for (let i = 0; i < attempt.length; i++) {
-      let currentValueToVerify = attempt[i];
-      if (currentValueToVerify === this.SECRET[i]) {
+      if (attempt[i] === this.SECRET[i]) {
         blacks++;
         validated[i] = true;
       }
     }
 
     for (let i = 0; i < attempt.length; i++) {
-      let currentValueToVerify = attempt[i];
-      if (currentValueToVerify !== this.SECRET[i]) {
+      if (attempt[i] !== this.SECRET[i]) {
         for (let j = 0; j < this.SECRET.length; j++) {
-          if (currentValueToVerify === this.SECRET[j] && !validated[j]) {
+          if (attempt[i] === this.SECRET[j] && !validated[j]) {
             whites++;
             validated[j] = true;
             break;
@@ -179,33 +224,29 @@ export class GameInfo implements OnInit {
 
   generateSecretCode() {
     for (let i = 0; i < this.MAX_COLORS; i++) {
-      const randomColor = Math.floor(Math.random() * this.COLORS.length);
+      const randomColor = Math.floor(Math.random() * this.CARS.length);
       this.SECRET.push(randomColor);
     }
   }
 
   validateGameOline() {
-    if(this.tokenManager.getToken()) {
+    if (this.tokenManager.getToken()) {
       this.ONLINE_GAME = true;
 
       this.api.game().subscribe({
-        next: (response) => {
-          console.log(response.body);
-        },
         error: (error) => {
           if (error.status === 409) {
             this.ONLINE_GAME = false;
             this.localNotice.set(
-              'Ya jugaste el desafío actual. Estás jugando de forma local y no se sumarán puntos.',
+              'Ya corriste el gran premio de hoy. Esta carrera es de práctica y no suma puntos.',
             );
           }
         },
       });
     } else {
       this.localNotice.set(
-        'Estás jugando de forma local y no se sumarán puntos.',
+        'Carrera de práctica: inicia sesión para sumar puntos al ranking.',
       );
     }
   }
-
 }

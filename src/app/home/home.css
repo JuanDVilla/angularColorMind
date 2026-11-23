@@ -1,23 +1,113 @@
-.center-box {
-  background-color: var(--color-primario);
+.hero {
   width: 100%;
   max-width: 1000px;
-  min-height: 500px;
-  padding: 150px 40px;
-  border-radius: 8px;
   text-align: center;
+  padding: 48px 24px 24px;
 }
 
-.center-box h1 {
-  color: #ffffff;
-  font-size: 4rem;
-  font-weight: bold;
-  padding: 10px;
+.hero-grid {
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 3vw, 28px);
+  margin-bottom: 36px;
 }
 
-.center-box h2 {
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: bold;
-  padding: 10px;
+.hero-car {
+  width: clamp(36px, 8vw, 62px);
+  aspect-ratio: 60 / 112;
+  transform: translateY(calc(var(--i) % 2 * 26px));
+  animation: launch 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 0.1s);
+}
+
+@keyframes launch {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--i) % 2 * 26px + 80px));
+  }
+}
+
+.eyebrow {
+  color: var(--red);
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+h1 span {
+  color: var(--red);
+}
+
+.lead {
+  max-width: 560px;
+  margin: 20px auto 30px;
+  color: var(--text-dim);
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+
+.cta {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+  text-align: left;
+}
+
+.rules article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.step {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--red);
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.rules h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.rules p {
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.peg {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.peg-green {
+  background: var(--green);
+}
+
+.peg-amber {
+  background: var(--amber);
 }

@@ -1,43 +1,44 @@
-<div class="records-outer-box">
-  <fieldset class="form-container">
-    <legend class="scores-legend">Registro</legend>
+<div class="panel auth-card">
+  <h1>Nuevo piloto</h1>
+  <p class="subtitle">Crea tu cuenta para entrar al campeonato.</p>
 
-    <form id="form-register" class="auth-form" (ngSubmit)="register()">
-      <div class="form-group">
-        <label for="reg-user">User:</label>
-        <input type="text" id="reg-user" [(ngModel)]="username" name="user" placeholder="Nombre Usuario" required (blur)="validateUser()">
-      </div>
+  <form id="form-register" class="auth-form" (ngSubmit)="register()">
+    <div class="form-group">
+      <label for="reg-user">Usuario</label>
+      <input type="text" id="reg-user" [(ngModel)]="username" name="user" placeholder="Nombre de usuario" autocomplete="username" required (blur)="validateUser()" />
+    </div>
 
-      <div class="form-group">
-        <label for="reg-email">Email:</label>
-        <input type="email" id="reg-email" [(ngModel)]="email" name="email" placeholder="Email" required>
-      </div>
+    <div class="form-group">
+      <label for="reg-email">Email</label>
+      <input type="email" id="reg-email" [(ngModel)]="email" name="email" placeholder="piloto@correo.com" autocomplete="email" required />
+    </div>
 
-      <div class="form-group">
-        <label for="reg-pass">Password:</label>
-        <input type="password" id="reg-pass" #passwordInput [(ngModel)]="password" name="password" placeholder="Password" required>
-      </div>
+    <div class="form-group">
+      <label for="reg-pass">Contraseña</label>
+      <input type="password" id="reg-pass" #passwordInput [(ngModel)]="password" name="password" placeholder="••••••••" autocomplete="new-password" required />
+    </div>
 
-      <div class="form-group">
-        <label for="reg-repeat">Repeat password:</label>
-        <input type="password" id="reg-repeat" [(ngModel)]="repeatPassword" name="repeat_password" placeholder="" required>
-      </div>
+    <div class="form-group">
+      <label for="reg-repeat">Repite la contraseña</label>
+      <input type="password" id="reg-repeat" [(ngModel)]="repeatPassword" name="repeat_password" placeholder="••••••••" autocomplete="new-password" required />
+    </div>
 
-      @if (errorMessage()) {
-        <p class="error-message" role="alert">{{ errorMessage() }}</p>
-      }
+    @if (errorMessage()) {
+      <p class="error-message" role="alert">{{ errorMessage() }}</p>
+    }
 
-      @if (successMessage()) {
-        <p class="success-message" role="status">
-          {{ successMessage() }}
-          <br>
-          <a routerLink="/login">Ir al login</a>
-        </p>
-      }
+    @if (successMessage()) {
+      <p class="success-message" role="status">
+        {{ successMessage() }}
+        <br />
+        <a routerLink="/login">Ir al login</a>
+      </p>
+    }
 
-      <div class="form-actions">
-        <button type="submit" id="submit-register" class="btn-send-auth">Send</button>
-      </div>
-    </form>
-  </fieldset>
+    <div class="form-actions">
+      <button type="submit" id="submit-register" class="btn btn-primary">Registrarme</button>
+    </div>
+  </form>
+
+  <p class="auth-alt">¿Ya tienes cuenta? <a routerLink="/login">Entrar</a></p>
 </div>

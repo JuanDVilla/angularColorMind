@@ -1,63 +1,81 @@
-.scores-container {
-  border: 2px solid #000000; /* Borde azul del fieldset */
-  border-radius: 4px;
-  padding: 20px 40px 30px;
-  background-color: transparent;
+.records {
   width: 100%;
-  max-width: 550px;
+  max-width: 1200px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
 }
 
-.scores-legend {
-  color: #ffffff;
-  font-weight: bold;
-  font-size: 1.15rem;
-  padding: 0 10px;
-  text-align: center;
+.scores {
+  flex: 1 1 460px;
+  min-width: 0;
+  padding: 24px;
+}
+
+.table-wrap {
+  overflow-x: auto;
 }
 
 .scores-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  color: #ffffff;
 }
 
 .scores-table th {
-  font-weight: bold;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
   padding: 8px 10px;
   text-align: right;
-}
-
-.scores-table th:nth-child(1),
-.scores-table th:nth-child(2) {
-  text-align: left;
+  border-bottom: 1px solid var(--line);
 }
 
 .scores-table td {
-  padding: 6px 10px;
+  padding: 10px;
   text-align: right;
   white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.scores-table .col-num {
+.scores-table th:nth-child(1),
+.scores-table th:nth-child(2),
+.col-num,
+.col-user {
   text-align: left;
-  width: 30px;
-  font-weight: 500;
 }
 
-.scores-table .col-user {
-  text-align: left;
-  font-weight: 500;
+.col-num {
+  width: 44px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--text-dim);
 }
 
-.records-outer-box {
-  max-width: 1300px;
-  gap: 24px;
-  align-items: flex-start;
+.col-user {
+  font-weight: 600;
 }
 
-.records-outer-box .scores-container {
-  flex: 1 1 0;
-  min-width: 0;
-  width: auto;
+.col-score {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pos-1 .col-num { color: #ffd34d; }
+.pos-2 .col-num { color: #c9d1dc; }
+.pos-3 .col-num { color: #d99a63; }
+
+.pos-1 td { background: rgba(255, 211, 77, 0.06); }
+
+.scores-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.empty {
+  text-align: center !important;
+  color: var(--text-dim);
+  padding: 24px 10px !important;
 }

@@ -1,16 +1,21 @@
 <header class="navbar">
-  <nav class="nav-left">
-    <a routerLink="home" routerLinkActive="active">Home</a>
-    <a routerLink="game" routerLinkActive="active">Play</a>
-    <a routerLink="records" routerLinkActive="active">Records</a>
+  <a routerLink="home" class="brand" aria-label="F1 Pole Position Mind">
+    <span class="brand-flag"></span>
+    <span class="brand-text display">F1 <b>Pole</b> Mind</span>
+  </a>
+  <nav class="nav-links">
+    <a routerLink="home" routerLinkActive="active">Inicio</a>
+    <a routerLink="game" routerLinkActive="active">Jugar</a>
+    <a routerLink="records" routerLinkActive="active">Récords</a>
   </nav>
-  <nav class="nav-right">
+  <nav class="nav-user">
     @if (logged()) {
-      <span class="username">Bienvenido: {{ username() }}</span>
-      <a href="#" (click)="$event.preventDefault(); logout()">Logout</a>
+      <span class="username"><i class="dot"></i>{{ username() }}</span>
+      <a href="#" class="nav-btn" (click)="$event.preventDefault(); logout()">Salir</a>
     } @else {
-      <a routerLink="register" routerLinkActive="active">Register</a>
-      <a routerLink="login" routerLinkActive="active">Login</a>
+      <a routerLink="register" routerLinkActive="active">Registro</a>
+      <a routerLink="login" class="nav-btn" routerLinkActive="active">Entrar</a>
     }
   </nav>
 </header>
+<div class="checkered"></div>
